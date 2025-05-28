@@ -52,16 +52,12 @@ export function ImageUploader({
         fileInputRef.current?.click();
       }}
       className={clsx(
-        "group relative flex aspect-[4/3] w-full cursor-pointer flex-col items-center justify-center rounded-xl bg-gray-900",
+        isDragging ? "text-gray-400" : "text-gray-700 hover:text-gray-400",
+        "relative flex aspect-[4/3] w-full cursor-pointer flex-col items-center justify-center rounded-xl bg-gray-900 focus-visible:text-gray-400 focus-visible:outline-none",
       )}
     >
       <svg
-        className={clsx(
-          isDragging
-            ? "text-gray-400"
-            : "text-gray-700 group-hover:text-gray-400",
-          "absolute inset-0 transition-colors",
-        )}
+        className={clsx("absolute inset-0 transition-colors")}
         viewBox="0 0 400 300"
         // preserveAspectRatio="none"
       >

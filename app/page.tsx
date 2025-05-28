@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { generateImage } from "./actions";
 import { ImageUploader } from "./ImageUploader";
 import { SubmitButton } from "./SubmitButton";
 import { Fieldset } from "./Fieldset";
+import Spinner from "./Spinner";
+import { preloadNextImage } from "@/lib/preload-next-image";
 
 export default function Home() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -14,6 +16,8 @@ export default function Home() {
     height: number;
   }>({ width: 1024, height: 768 });
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
+
+  const [pending, startTransition] = useTransition();
 
   return (
     <div className="mx-auto grid max-w-7xl grid-cols-6 gap-4 px-4">
@@ -57,7 +61,7 @@ export default function Home() {
           </>
         ) : (
           <div className="">
-            <div className="flex aspect-[4/3] items-center justify-center rounded-xl bg-gray-900">
+            <div className="relative flex aspect-[4/3] items-center justify-center rounded-xl bg-gray-900">
               <Image
                 width={imageData.width}
                 height={imageData.height}
@@ -66,6 +70,15 @@ export default function Home() {
                 alt="uploaded image"
                 className="object-contain"
               />
+
+              {pending && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gray-900/75">
+                  <Spinner className="size-6 text-white" />
+                  <p className="text-xl text-white">
+                    Working our pixel magic...
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="mt-4">
@@ -73,27 +86,38 @@ export default function Home() {
                 <form
                   className="relative"
                   action={async (formData) => {
-                    const prompt = formData.get("prompt") as string;
-                    const imageUrl = imageUrls.at(-1);
-                    if (!imageUrl) return;
+                    startTransition(async () => {
+                      const prompt = formData.get("prompt") as string;
+                      const imageUrl = imageUrls.at(-1);
+                      if (!imageUrl) return;
 
-                    const generatedImage = await generateImage({
-                      imageUrl,
-                      prompt,
-                      width: imageData.width,
-                      height: imageData.height,
+                      const generatedImageUrl = await generateImage({
+                        imageUrl,
+                        prompt,
+                        width: imageData.width,
+                        height: imageData.height,
+                      });
+
+                      if (generatedImageUrl) {
+                        await preloadNextImage({
+                          src: generatedImageUrl,
+                          width: imageData.width,
+                          height: imageData.height,
+                        });
+                        setImageUrls((current) => [
+                          ...current,
+                          generatedImageUrl,
+                        ]);
+                        setActiveImageUrl(generatedImageUrl);
+                      }
                     });
-
-                    if (generatedImage) {
-                      setImageUrls((current) => [...current, generatedImage]);
-                      setActiveImageUrl(generatedImage);
-                    }
                   }}
                 >
                   <Fieldset>
                     <input
                       type="text"
                       name="prompt"
+                      autoFocus
                       className="mr-2 w-full rounded-xl bg-gray-900 px-4 py-5 focus-visible:outline focus-visible:outline-white"
                       placeholder="Tell us the changes you want..."
                       required
