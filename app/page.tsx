@@ -135,28 +135,32 @@ export default function Home() {
                       const lastImage = images.at(-1);
                       if (!lastImage) return;
 
-                      const generatedImageUrl = await generateImage({
+                      const generation = await generateImage({
                         imageUrl: lastImage.url,
                         prompt,
                         width: imageData.width,
                         height: imageData.height,
+                        userAPIKey:
+                          localStorage.getItem("togetherApiKey") || "",
                       });
 
-                      if (generatedImageUrl) {
+                      if (generation.success) {
                         await preloadNextImage({
-                          src: generatedImageUrl,
+                          src: generation.url,
                           width: imageData.width,
                           height: imageData.height,
                         });
                         setImages((current) => [
                           ...current,
                           {
-                            url: generatedImageUrl,
+                            url: generation.url,
                             prompt,
                             version: current.length,
                           },
                         ]);
-                        setActiveImageUrl(generatedImageUrl);
+                        setActiveImageUrl(generation.url);
+                      } else {
+                        console.error(generation.error);
                       }
                     });
                   }}
