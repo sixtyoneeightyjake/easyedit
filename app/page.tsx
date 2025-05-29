@@ -22,6 +22,7 @@ export default function Home() {
   const [pending, startTransition] = useTransition();
 
   const activeImage = images.find((i) => i.url === activeImageUrl);
+  const latestImageIsActive = activeImage === images.at(-1);
 
   return (
     <div className="mx-auto grid max-w-6xl grid-cols-6 gap-4 px-4">
@@ -90,13 +91,12 @@ export default function Home() {
                 className="object-cover"
               />
 
-              <div className="absolute inset-x-0 bottom-0 flex gap-4 bg-gradient-to-t from-black/70 to-transparent p-4">
+              <div className="absolute inset-x-0 bottom-0 flex gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-black/75 font-mono text-xs">
                   v{activeImage.version}
                 </div>
                 {activeImage.prompt && (
                   <div>
-                    {/* <p className="text-xs text-gray-200">Prompt used:</p> */}
                     <p className="text-base/8 text-gray-50">
                       {activeImage.prompt}
                     </p>
@@ -115,9 +115,10 @@ export default function Home() {
             </div>
 
             <div className="mt-4">
-              {activeImageUrl === images.at(-1)?.url ? (
+              {latestImageIsActive ? (
                 <form
                   className="relative"
+                  key={activeImageUrl}
                   action={(formData) => {
                     startTransition(async () => {
                       const prompt = formData.get("prompt") as string;
@@ -155,7 +156,7 @@ export default function Home() {
                       type="text"
                       name="prompt"
                       autoFocus
-                      className="mr-2 w-full px-4 py-5 focus-visible:outline-none"
+                      className="mr-2 w-full px-4 py-5 focus-visible:outline-none disabled:opacity-50"
                       placeholder="Tell us the changes you want..."
                       required
                     />

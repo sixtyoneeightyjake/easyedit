@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import Together from 'together-ai';
+import Together from "together-ai";
 
 const together = new Together();
 
@@ -17,9 +17,39 @@ export async function generateImage({
 }) {
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
+  // const response = await fetch(
+  //   "https://api.together.ai/v1/images/generations",
+  //   {
+  //     method: "post",
+  //     headers: {
+  //       Authorization: `Bearer ${process.env.TOGETHER_API_KEY}`,
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       model: "black-forest-labs/FLUX.1-kontext-max",
+  //       max_tokens: 32,
+  //       prompt,
+  //       width: adjustedDimensions.width,
+  //       height: adjustedDimensions.height,
+  //       messages: [
+  //         {
+  //           role: "user",
+  //           content: [
+  //             { type: "text", text: prompt },
+  //             { type: "image_url", image_url: { url: imageUrl } },
+  //           ],
+  //         },
+  //       ],
+  //     }),
+  //   },
+  // );
+
+  // const json = await response.json();
+  // return json.data[0].url;
+
   const response = await together.images.create({
     // TODO: Update to the new model
-    model: 'black-forest-labs/FLUX.1-depth',
+    model: "black-forest-labs/FLUX.1-depth",
     width: adjustedDimensions.width,
     height: adjustedDimensions.height,
     steps: 28,
@@ -32,7 +62,7 @@ export async function generateImage({
 
 function getAdjustedDimensions(
   width: number,
-  height: number
+  height: number,
 ): { width: number; height: number } {
   const maxDim = 1024;
   const minDim = 64;
@@ -56,11 +86,11 @@ function getAdjustedDimensions(
 
   const adjustedWidth = Math.min(
     maxDim,
-    Math.max(minDim, roundToMultipleOf16(scaledWidth))
+    Math.max(minDim, roundToMultipleOf16(scaledWidth)),
   );
   const adjustedHeight = Math.min(
     maxDim,
-    Math.max(minDim, roundToMultipleOf16(scaledHeight))
+    Math.max(minDim, roundToMultipleOf16(scaledHeight)),
   );
 
   return { width: adjustedWidth, height: adjustedHeight };

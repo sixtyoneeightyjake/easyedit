@@ -28,11 +28,29 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${kulimPark.variable} ${syneMono.variable}`}>
       <body className="bg-gray-950 text-gray-300 antialiased">
-        <header className="flex justify-center p-4 text-center text-white">
-          <div className="flex items-center gap-2 text-lg">
+        <header className="relative flex p-4 text-center text-white">
+          <div className="flex gap-3">
+            <div className="text-left text-xs">
+              <p className="text-gray-600">[Optional] Add your</p>
+              <a
+                href="https://api.together.xyz/settings/api-keys"
+                target="_blank"
+                className="text-gray-300 underline"
+              >
+                Together API Key:
+              </a>
+            </div>
+            <input
+              type="text"
+              placeholder="API key"
+              className="rounded border-[0.5px] border-gray-700 bg-gray-900 px-2 py-1 text-sm focus-visible:outline focus-visible:outline-gray-200"
+            />
+          </div>
+          <div className="absolute left-1/2 flex grow -translate-x-1/2 items-center gap-2 text-lg">
             <Logo />
             EasyEdit
           </div>
+          <div></div>
         </header>
 
         <main className="mt-4">{children}</main>
