@@ -81,7 +81,7 @@ export function ImageUploader({
       </div>
 
       <div className="pb-3">
-        <p className="text-gray-500">
+        <p className="text-sm text-gray-500">
           Powered by <span className="text-white">Together.ai</span>
         </p>
       </div>

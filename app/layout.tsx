@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Kulim_Park } from "next/font/google";
+import { Kulim_Park, Syne_Mono } from "next/font/google";
 import "./globals.css";
 import { Logo } from "./Logo";
 
@@ -7,6 +7,12 @@ const kulimPark = Kulim_Park({
   variable: "--font-kulim-park",
   subsets: ["latin"],
   weight: ["200", "300", "400", "600", "700"],
+});
+
+const syneMono = Syne_Mono({
+  variable: "--font-syne-mono",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -20,10 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${kulimPark.variable} bg-gray-950 font-[family-name:var(--font-kulim-park)] text-gray-300 antialiased`}
-      >
+    <html lang="en" className={`${kulimPark.variable} ${syneMono.variable}`}>
+      <body className="bg-gray-950 text-gray-300 antialiased">
         <header className="flex justify-center p-4 text-center text-white">
           <div className="flex items-center gap-2 text-lg">
             <Logo />

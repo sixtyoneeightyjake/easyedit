@@ -8,42 +8,61 @@ import { SubmitButton } from "./SubmitButton";
 import { Fieldset } from "./Fieldset";
 import Spinner from "./Spinner";
 import { preloadNextImage } from "@/lib/preload-next-image";
+import clsx from "clsx";
 
 export default function Home() {
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [images, setImages] = useState<
+    { url: string; version: number; prompt?: string }[]
+  >([]);
   const [imageData, setImageData] = useState<{
     width: number;
     height: number;
   }>({ width: 1024, height: 768 });
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
-
   const [pending, startTransition] = useTransition();
 
+  const activeImage = images.find((i) => i.url === activeImageUrl);
+
   return (
-    <div className="mx-auto grid max-w-7xl grid-cols-6 gap-4 px-4">
+    <div className="mx-auto grid max-w-6xl grid-cols-6 gap-4 px-4">
       <div>
-        <div className="flex flex-col gap-2">
-          {imageUrls
+        <div className="flex flex-col gap-4">
+          {images
             .slice()
             .reverse()
-            .map((url) => (
-              <button key={url} onClick={() => setActiveImageUrl(url)}>
-                <Image
-                  width={imageData.width}
-                  height={imageData.height}
-                  style={{
-                    aspectRatio: imageData.width / imageData.height,
-                  }}
-                  src={url}
-                  alt="uploaded image"
-                />
-              </button>
+            .map((image) => (
+              <div className="flex items-center gap-3" key={image.url}>
+                <span
+                  className={clsx(
+                    activeImageUrl === image.url
+                      ? "text-white"
+                      : "text-gray-400",
+                    "w-4 shrink-0 font-mono text-xs",
+                  )}
+                >
+                  v{image.version}
+                </span>
+                <button
+                  className="cursor-pointer overflow-hidden rounded-md focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white"
+                  onClick={() => setActiveImageUrl(image.url)}
+                >
+                  <Image
+                    width={imageData.width}
+                    height={imageData.height}
+                    style={{
+                      aspectRatio: imageData.width / imageData.height,
+                    }}
+                    src={image.url}
+                    alt=""
+                  />
+                </button>
+              </div>
             ))}
         </div>
       </div>
 
       <div className="col-span-4">
-        {activeImageUrl === null ? (
+        {!activeImage ? (
           <>
             <h1 className="mx-auto max-w-md text-center text-4xl text-balance text-white">
               Edit any image with a simple prompt
@@ -53,23 +72,37 @@ export default function Home() {
               <ImageUploader
                 onUpload={({ url, width, height }) => {
                   setImageData({ width, height });
-                  setImageUrls([url]);
+                  setImages([{ url, version: 0 }]);
                   setActiveImageUrl(url);
                 }}
               />
             </div>
           </>
         ) : (
-          <div className="">
-            <div className="relative flex aspect-[4/3] items-center justify-center rounded-xl bg-gray-900">
+          <div>
+            <div className="relative flex items-center justify-center overflow-hidden rounded-xl bg-gray-900">
               <Image
                 width={imageData.width}
                 height={imageData.height}
-                src={activeImageUrl}
+                src={activeImage.url}
                 style={{ aspectRatio: imageData.width / imageData.height }}
                 alt="uploaded image"
                 className="object-contain"
               />
+
+              <div className="absolute inset-x-0 bottom-0 flex gap-4 bg-gradient-to-b from-transparent to-black/70 p-4">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-black/75 font-mono text-xs">
+                  v{activeImage.version}
+                </div>
+                {activeImage.prompt && (
+                  <div>
+                    <p className="text-xs text-gray-400">Prompt used:</p>
+                    <p className="text-base/4 text-gray-50">
+                      {activeImage.prompt}
+                    </p>
+                  </div>
+                )}
+              </div>
 
               {pending && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gray-900/75">
@@ -82,17 +115,17 @@ export default function Home() {
             </div>
 
             <div className="mt-4">
-              {activeImageUrl === imageUrls.at(-1) ? (
+              {activeImageUrl === images.at(-1)?.url ? (
                 <form
                   className="relative"
-                  action={async (formData) => {
+                  action={(formData) => {
                     startTransition(async () => {
                       const prompt = formData.get("prompt") as string;
-                      const imageUrl = imageUrls.at(-1);
-                      if (!imageUrl) return;
+                      const lastImage = images.at(-1);
+                      if (!lastImage) return;
 
                       const generatedImageUrl = await generateImage({
-                        imageUrl,
+                        imageUrl: lastImage.url,
                         prompt,
                         width: imageData.width,
                         height: imageData.height,
@@ -104,24 +137,29 @@ export default function Home() {
                           width: imageData.width,
                           height: imageData.height,
                         });
-                        setImageUrls((current) => [
+                        setImages((current) => [
                           ...current,
-                          generatedImageUrl,
+                          {
+                            url: generatedImageUrl,
+                            prompt,
+                            version: current.length,
+                          },
                         ]);
                         setActiveImageUrl(generatedImageUrl);
                       }
                     });
                   }}
                 >
-                  <Fieldset>
+                  <Fieldset className="rounded-xl bg-gray-900">
                     <input
                       type="text"
                       name="prompt"
                       autoFocus
-                      className="mr-2 w-full rounded-xl bg-gray-900 px-4 py-5 focus-visible:outline focus-visible:outline-white"
+                      className="mr-2 w-full px-4 py-5 focus-visible:outline-none"
                       placeholder="Tell us the changes you want..."
                       required
                     />
+
                     <SubmitButton className="absolute top-4 right-4 flex size-8 items-center justify-center rounded-full bg-white text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                       <svg
                         width="10"
