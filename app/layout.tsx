@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${kulimPark.variable} ${syneMono.variable}`}>
       <head>
-        <PlausibleProvider domain="editease.io" />
+        <PlausibleProvider domain="easyedit.io" />
       </head>
       <body className="bg-gray-950 text-gray-300 antialiased">
         <header className="relative flex p-4 text-center text-white">
