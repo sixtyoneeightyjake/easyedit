@@ -1,9 +1,10 @@
 "use server";
 
 import { Ratelimit } from "@upstash/ratelimit";
-import Together from "together-ai";
+// import Together from "together-ai";
 import { Redis } from "@upstash/redis";
 import { headers } from "next/headers";
+import { fal } from "@fal-ai/client";
 
 let ratelimit: Ratelimit | undefined;
 
@@ -47,10 +48,11 @@ export async function generateImage({
     }
   }
 
-  const together = new Together();
-
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
+  /*
+    Trying kontext on Together - Not working
+  */
   // const response = await fetch(
   //   "https://api.together.ai/v1/images/generations",
   //   {
@@ -86,23 +88,56 @@ export async function generateImage({
   // const json = await response.json();
   // return json.data[0].url;
 
-  const response = await together.images.create({
-    // TODO: Update to the new model
-    model: "black-forest-labs/FLUX.1-depth",
-    width: adjustedDimensions.width,
-    height: adjustedDimensions.height,
-    steps: 28,
-    prompt,
-    image_url: imageUrl,
+  /*
+    FAL
+
+  */
+
+  const result = await fal.subscribe("fal-ai/flux-pro/kontext", {
+    input: {
+      prompt,
+      image_url: imageUrl,
+      width: adjustedDimensions.width,
+      height: adjustedDimensions.height,
+    },
+    logs: true,
+    onQueueUpdate: (update) => {
+      if (update.status === "IN_PROGRESS") {
+        update.logs.map((log) => log.message).forEach(console.log);
+      }
+    },
   });
 
-  const url = response.data[0].url;
+  const url = result.data.images[0].url;
 
   if (url) {
     return { success: true, url };
   } else {
     return { success: false, error: "Image could not be generated" };
   }
+
+  /*
+    Together Depth for WIP
+  */
+  // const together = new Together();
+
+  // const response = await together.images.create({
+  //   // TODO: Update to the new model
+  //   model: "black-forest-labs/FLUX.1-depth",
+  //   width: adjustedDimensions.width,
+  //   height: adjustedDimensions.height,
+  //   steps: 28,
+  //   prompt,
+  //   image_url: imageUrl,
+  // });
+
+  // const url = response.data[0].url;
+
+  // if (url) {
+  //   return { success: true, url };
+  // } else {
+  //   return { success: false, error: "Image could not be generated" };
+  // }
 }
 
 function getAdjustedDimensions(
