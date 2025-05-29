@@ -87,7 +87,7 @@ export default function Home() {
                 src={activeImage.url}
                 style={{ aspectRatio: imageData.width / imageData.height }}
                 alt="uploaded image"
-                className="object-contain"
+                className="object-cover"
               />
 
               <div className="absolute inset-x-0 bottom-0 flex gap-4 bg-gradient-to-t from-black/70 to-transparent p-4">
