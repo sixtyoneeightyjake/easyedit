@@ -17,9 +17,34 @@ const syneMono = Syne_Mono({
   weight: ["400"],
 });
 
+const title = "EasyEdit – edit images in one prompt";
+const description = "The easiest way to edit images in one prompt";
+const url = "https://www.easyedit.io/";
+const ogimage = "https://www.easyedit.io/og-image.png";
+const sitename = "easyedit.io";
+
 export const metadata: Metadata = {
-  title: "EasyEdit",
-  description: "The easiest way to edit images in one prompt",
+  metadataBase: new URL(url),
+  title,
+  description,
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    images: [ogimage],
+    title,
+    description,
+    url: url,
+    siteName: sitename,
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [ogimage],
+    title,
+    description,
+  },
 };
 
 export const viewport: Viewport = {
