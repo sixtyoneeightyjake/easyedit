@@ -27,19 +27,24 @@ export async function generateImage({
   //     },
   //     body: JSON.stringify({
   //       model: "black-forest-labs/FLUX.1-kontext-max",
-  //       max_tokens: 32,
+  //       // model: "black-forest-labs/FLUX.1-kontext-pro",
+  //       // max_tokens: 32,
+  //       steps: 28,
   //       prompt,
-  //       width: adjustedDimensions.width,
-  //       height: adjustedDimensions.height,
-  //       messages: [
-  //         {
-  //           role: "user",
-  //           content: [
-  //             { type: "text", text: prompt },
-  //             { type: "image_url", image_url: { url: imageUrl } },
-  //           ],
-  //         },
-  //       ],
+  //       // width: adjustedDimensions.width,
+  //       // height: adjustedDimensions.height,
+  //       image_url: imageUrl,
+  //       // input_image: imageUrl,
+  //       aspect_ratio: "match_input_image",
+  //       // messages: [
+  //       //   {
+  //       //     role: "user",
+  //       //     content: [
+  //       //       { type: "text", text: prompt },
+  //       //       { type: "image_url", image_url: { url: imageUrl } },
+  //       //     ],
+  //       //   },
+  //       // ],
   //     }),
   //   },
   // );

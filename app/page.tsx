@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { generateImage } from "./actions";
 import { ImageUploader } from "./ImageUploader";
 import { SubmitButton } from "./SubmitButton";
@@ -20,52 +20,60 @@ export default function Home() {
   }>({ width: 1024, height: 768 });
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const activeImage = images.find((i) => i.url === activeImageUrl);
   const latestImageIsActive = activeImage === images.at(-1);
 
   return (
-    <div className="mx-auto grid max-w-6xl grid-cols-6 gap-4 px-4">
-      <div>
-        <div className="flex flex-col gap-4">
-          {images
-            .slice()
-            .reverse()
-            .map((image) => (
-              <div className="flex items-center gap-3" key={image.url}>
-                <span
-                  className={clsx(
-                    activeImageUrl === image.url
-                      ? "text-white"
-                      : "text-gray-400",
-                    "w-4 shrink-0 font-mono text-xs",
-                  )}
-                >
-                  v{image.version}
-                </span>
-                <button
-                  className="cursor-pointer overflow-hidden rounded-md focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white"
-                  onClick={() => setActiveImageUrl(image.url)}
-                >
-                  <Image
-                    width={imageData.width}
-                    height={imageData.height}
-                    style={{
-                      aspectRatio: imageData.width / imageData.height,
-                    }}
-                    src={image.url}
-                    alt=""
-                  />
-                </button>
-              </div>
-            ))}
-        </div>
+    <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 md:flex-row">
+      <div
+        ref={scrollRef}
+        className="flex shrink-0 snap-x scroll-pl-4 gap-4 overflow-x-auto pt-1 pb-5 max-md:order-2 max-md:-mx-4 max-md:px-4 md:w-40 md:flex-col"
+      >
+        {images
+          .slice()
+          .reverse()
+          .map((image) => (
+            <div
+              className="flex shrink-0 snap-start items-center gap-3"
+              key={image.url}
+            >
+              <span
+                className={clsx(
+                  activeImageUrl === image.url ? "text-white" : "text-gray-400",
+                  "w-4 shrink-0 font-mono text-xs max-md:hidden",
+                )}
+              >
+                v{image.version}
+              </span>
+              <button
+                className={clsx(
+                  activeImageUrl === image.url &&
+                    "max-md:outline max-md:outline-offset-2 max-md:outline-white",
+                  "cursor-pointer overflow-hidden rounded-md focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white",
+                )}
+                onClick={() => setActiveImageUrl(image.url)}
+              >
+                <Image
+                  width={imageData.width}
+                  height={imageData.height}
+                  style={{
+                    aspectRatio: imageData.width / imageData.height,
+                  }}
+                  className="w-auto max-md:h-20"
+                  src={image.url}
+                  alt=""
+                />
+              </button>
+            </div>
+          ))}
       </div>
 
-      <div className="col-span-4">
+      <div className="grow">
         {!activeImage ? (
           <>
-            <h1 className="mx-auto max-w-md text-center text-4xl text-balance text-white">
+            <h1 className="mx-auto max-w-md text-center text-2xl text-balance text-white md:text-4xl">
               Edit any image with a simple prompt
             </h1>
 
@@ -81,7 +89,7 @@ export default function Home() {
           </>
         ) : (
           <div>
-            <div className="relative flex items-center justify-center overflow-hidden rounded-xl bg-gray-900">
+            <div className="relative flex h-[50vh] items-center justify-center overflow-hidden rounded-xl bg-gray-900 md:h-auto">
               <Image
                 width={imageData.width}
                 height={imageData.height}
@@ -92,17 +100,19 @@ export default function Home() {
               />
 
               <div className="absolute inset-x-0 bottom-0 flex gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-black/75 font-mono text-xs">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-black/75 font-mono text-xs ring ring-white/10">
                   v{activeImage.version}
                 </div>
                 {activeImage.prompt && (
                   <div>
-                    <p className="text-base/8 text-gray-50">
+                    <p className="text-sm/8 text-gray-50 md:text-base/8">
                       {activeImage.prompt}
                     </p>
                   </div>
                 )}
               </div>
+
+              <div className="pointer-events-none absolute inset-px rounded-xl ring ring-white/10" />
 
               {pending && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gray-900/75">
@@ -114,7 +124,7 @@ export default function Home() {
               )}
             </div>
 
-            <div className="mt-4">
+            <div className="mt-4 h-12">
               {latestImageIsActive ? (
                 <form
                   className="relative"
@@ -151,17 +161,18 @@ export default function Home() {
                     });
                   }}
                 >
-                  <Fieldset className="rounded-xl bg-gray-900">
+                  <Fieldset className="relative rounded-xl bg-gray-900">
+                    <div className="pointer-events-none absolute inset-px rounded-xl ring ring-white/10" />
                     <input
                       type="text"
                       name="prompt"
                       autoFocus
-                      className="mr-2 w-full px-4 py-5 focus-visible:outline-none disabled:opacity-50"
+                      className="mr-2 w-full px-3 py-3 pr-14 focus-visible:outline-none disabled:opacity-50 md:px-4 md:py-5"
                       placeholder="Tell us the changes you want..."
                       required
                     />
 
-                    <SubmitButton className="absolute top-4 right-4 flex size-8 items-center justify-center rounded-full bg-white text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                    <SubmitButton className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:top-4 md:right-4">
                       <svg
                         width="10"
                         viewBox="0 0 8 10"
@@ -177,12 +188,28 @@ export default function Home() {
                   </Fieldset>
                 </form>
               ) : (
-                <p>Select the latest version to make changes</p>
+                <p className="text-base/12">
+                  <button
+                    onClick={() => {
+                      setActiveImageUrl(images.at(-1)?.url ?? null);
+                      scrollRef.current?.scrollTo({
+                        left: 0,
+                        behavior: "smooth",
+                      });
+                    }}
+                    className="cursor-pointer rounded leading-none text-sky-500 focus-visible:outline focus-visible:outline-offset-4 focus-visible:outline-sky-500"
+                  >
+                    Select the latest version
+                  </button>{" "}
+                  to make more edits.
+                </p>
               )}
             </div>
           </div>
         )}
       </div>
+
+      <div className="w-40 shrink-0" />
     </div>
   );
 }
