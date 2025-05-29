@@ -90,14 +90,14 @@ export default function Home() {
                 className="object-contain"
               />
 
-              <div className="absolute inset-x-0 bottom-0 flex gap-4 bg-gradient-to-b from-transparent to-black/70 p-4">
+              <div className="absolute inset-x-0 bottom-0 flex gap-4 bg-gradient-to-t from-black/70 to-transparent p-4">
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-black/75 font-mono text-xs">
                   v{activeImage.version}
                 </div>
                 {activeImage.prompt && (
                   <div>
-                    <p className="text-xs text-gray-400">Prompt used:</p>
-                    <p className="text-base/4 text-gray-50">
+                    {/* <p className="text-xs text-gray-200">Prompt used:</p> */}
+                    <p className="text-base/8 text-gray-50">
                       {activeImage.prompt}
                     </p>
                   </div>
