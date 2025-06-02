@@ -61,7 +61,7 @@ export default function RootLayout({
       <head>
         <PlausibleProvider domain="easyedit.io" />
       </head>
-      <body className="bg-gray-950 text-gray-300 antialiased">
+      <body className="antialiased">
         <header className="relative flex p-4 text-center text-white">
           <UserAPIKey />
 

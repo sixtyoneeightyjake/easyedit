@@ -51,9 +51,6 @@ export async function generateImage({
 
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
-  /*
-    Trying kontext on Together - Not working
-  */
   const response = await fetch(
     "https://api.together.ai/v1/images/generations",
     {
@@ -65,23 +62,11 @@ export async function generateImage({
       body: JSON.stringify({
         model: "black-forest-labs/FLUX.1-kontext-max",
         // model: "black-forest-labs/FLUX.1-kontext-pro",
-        // max_tokens: 32,
         steps: 28,
         prompt,
         width: adjustedDimensions.width,
         height: adjustedDimensions.height,
         image_url: imageUrl,
-        // input_image: imageUrl,
-        // aspect_ratio: "match_input_image",
-        // messages: [
-        //   {
-        //     role: "user",
-        //     content: [
-        //       { type: "text", text: prompt },
-        //       { type: "image_url", image_url: { url: imageUrl } },
-        //     ],
-        //   },
-        // ],
       }),
     },
   );
@@ -89,60 +74,15 @@ export async function generateImage({
   const json = await response.json();
   console.log(json);
   const url = json.data[0].url;
-  // return json.data[0].url;
-
-  /*
-    FAL
-
-  */
-
-  // console.log(1);
-  // const result = await fal.subscribe("fal-ai/flux-pro/kontext", {
-  //   input: {
-  //     prompt,
-  //     image_url: imageUrl,
-  //     width: adjustedDimensions.width,
-  //     height: adjustedDimensions.height,
-  //   },
-  //   logs: true,
-  //   onQueueUpdate: (update) => {
-  //     if (update.status === "IN_PROGRESS") {
-  //       update.logs.map((log) => log.message).forEach(console.log);
-  //     }
-  //   },
-  // });
-  // console.log(2);
-
-  // const url = result.data.images[0].url;
 
   if (url) {
     return { success: true, url };
   } else {
-    return { success: false, error: "Image could not be generated" };
+    return {
+      success: false,
+      error: "Image could not be generated. Please try again.",
+    };
   }
-
-  /*
-    Together Depth for WIP
-  */
-  // const together = new Together();
-
-  // const response = await together.images.create({
-  //   // TODO: Update to the new model
-  //   model: "black-forest-labs/FLUX.1-depth",
-  //   width: adjustedDimensions.width,
-  //   height: adjustedDimensions.height,
-  //   steps: 28,
-  //   prompt,
-  //   image_url: imageUrl,
-  // });
-
-  // const url = response.data[0].url;
-
-  // if (url) {
-  //   return { success: true, url };
-  // } else {
-  //   return { success: false, error: "Image could not be generated" };
-  // }
 }
 
 async function getIPAddress() {
