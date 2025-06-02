@@ -70,6 +70,7 @@ export default function RootLayout({
             <Logo />
             EasyEdit
           </div>
+
           <div></div>
         </header>
 

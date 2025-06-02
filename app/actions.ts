@@ -73,6 +73,7 @@ export async function generateImage({
     );
 
     const json = await response.json();
+    console.log(json);
     const url = json.data[0].url;
 
     if (url) {
