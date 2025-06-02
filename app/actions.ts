@@ -58,8 +58,8 @@ export async function generateImage(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "black-forest-labs/FLUX.1-kontext-max",
-          // model: "black-forest-labs/FLUX.1-kontext-pro",
+          // model: "black-forest-labs/FLUX.1-kontext-max",
+          model: "black-forest-labs/FLUX.1-kontext-pro",
           steps: 28,
           prompt,
           width: adjustedDimensions.width,
