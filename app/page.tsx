@@ -31,7 +31,7 @@ export default function Home() {
   const latestImageIsActive = activeImage === images.at(-1);
 
   const adjustedImageDimensions = getAdjustedDimensions(
-    imageData.height,
+    imageData.width,
     imageData.height,
   );
 
