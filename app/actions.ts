@@ -93,6 +93,7 @@ export async function generateImage({
 
   */
 
+  console.log(1);
   const result = await fal.subscribe("fal-ai/flux-pro/kontext", {
     input: {
       prompt,
@@ -107,6 +108,7 @@ export async function generateImage({
       }
     },
   });
+  console.log(2);
 
   const url = result.data.images[0].url;
 
