@@ -4,7 +4,6 @@ import Image, { getImageProps } from "next/image";
 import { useRef, useState, useTransition } from "react";
 import { generateImage } from "./actions";
 import { ImageUploader } from "./ImageUploader";
-import { SubmitButton } from "./SubmitButton";
 import { Fieldset } from "./Fieldset";
 import Spinner from "./Spinner";
 import { preloadNextImage } from "@/lib/preload-next-image";
@@ -266,12 +265,12 @@ export default function Home() {
                         type="text"
                         name="prompt"
                         autoFocus
-                        className="mr-2 w-full px-3 py-3 pr-14 focus-visible:outline-none disabled:opacity-50 md:px-4 md:py-5"
+                        className="mr-2 w-full px-3 py-4 pr-14 focus-visible:outline-none disabled:opacity-50 md:px-4 md:py-5"
                         placeholder="Tell us the changes you want..."
                         required
                       />
 
-                      <SubmitButton className="absolute top-2 right-2 flex size-8 cursor-pointer items-center justify-center rounded-full bg-white text-gray-900 transition hover:bg-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:top-4 md:right-4">
+                      <button className="absolute top-3 right-4 flex size-8 items-center justify-center rounded-full bg-white text-gray-900 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white enabled:cursor-pointer enabled:hover:bg-white/80 disabled:opacity-50 md:top-4">
                         <svg
                           width="10"
                           viewBox="0 0 8 10"
@@ -283,7 +282,7 @@ export default function Home() {
                             fill="#262626"
                           />
                         </svg>
-                      </SubmitButton>
+                      </button>
                     </Fieldset>
                   </form>
                 ) : (
