@@ -28,6 +28,9 @@ export function ImageUploader({
         getImageData(file),
       ]);
 
+      console.log(result.url);
+      console.log(data);
+
       onUpload({
         url: result.url,
         width: data.width ?? 1024,

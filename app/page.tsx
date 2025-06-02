@@ -9,6 +9,7 @@ import { Fieldset } from "./Fieldset";
 import Spinner from "./Spinner";
 import { preloadNextImage } from "@/lib/preload-next-image";
 import clsx from "clsx";
+import { SampleImages } from "./SampleImages";
 
 export default function Home() {
   const [images, setImages] = useState<
@@ -86,17 +87,27 @@ export default function Home() {
                 }}
               />
             </div>
+
+            <div className="mt-8">
+              <SampleImages
+                onSelect={({ url, width, height }) => {
+                  setImageData({ width, height });
+                  setImages([{ url, version: 0 }]);
+                  setActiveImageUrl(url);
+                }}
+              />
+            </div>
           </>
         ) : (
           <div>
-            <div className="relative flex h-[50vh] items-center justify-center overflow-hidden rounded-xl bg-gray-900 md:h-auto">
+            <div className="relative flex items-center justify-center overflow-hidden rounded-xl bg-gray-900">
               <Image
                 width={imageData.width}
                 height={imageData.height}
                 src={activeImage.url}
                 style={{ aspectRatio: imageData.width / imageData.height }}
                 alt="uploaded image"
-                className="object-cover"
+                className="object-contain max-md:h-[50vh] md:max-h-[80vh]"
               />
 
               <div className="absolute inset-x-0 bottom-0 flex gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
