@@ -12,6 +12,7 @@ import clsx from "clsx";
 import { SampleImages } from "./SampleImages";
 import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
 import { DownloadIcon } from "./components/DownloadIcon";
+import { toast } from "sonner";
 
 export default function Home() {
   const [images, setImages] = useState<
@@ -238,7 +239,7 @@ export default function Home() {
                         ]);
                         setActiveImageUrl(generation.url);
                       } else {
-                        console.error(generation.error);
+                        toast(generation.error);
                       }
                     });
                   }}

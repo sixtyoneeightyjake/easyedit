@@ -51,33 +51,40 @@ export async function generateImage({
 
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
-  const response = await fetch(
-    "https://api.together.ai/v1/images/generations",
-    {
-      method: "post",
-      headers: {
-        Authorization: `Bearer ${process.env.TOGETHER_API_KEY}`,
-        "Content-Type": "application/json",
+  try {
+    const response = await fetch(
+      "https://api.together.ai/v1/images/generations",
+      {
+        method: "post",
+        headers: {
+          Authorization: `Bearer ${process.env.TOGETHER_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "black-forest-labs/FLUX.1-kontext-max",
+          // model: "black-forest-labs/FLUX.1-kontext-pro",
+          steps: 28,
+          prompt,
+          width: adjustedDimensions.width,
+          height: adjustedDimensions.height,
+          image_url: imageUrl,
+        }),
       },
-      body: JSON.stringify({
-        model: "black-forest-labs/FLUX.1-kontext-max",
-        // model: "black-forest-labs/FLUX.1-kontext-pro",
-        steps: 28,
-        prompt,
-        width: adjustedDimensions.width,
-        height: adjustedDimensions.height,
-        image_url: imageUrl,
-      }),
-    },
-  );
+    );
 
-  const json = await response.json();
-  console.log(json);
-  const url = json.data[0].url;
+    const json = await response.json();
+    const url = json.data[0].url;
 
-  if (url) {
-    return { success: true, url };
-  } else {
+    if (url) {
+      return { success: true, url };
+    } else {
+      return {
+        success: false,
+        error: "Image could not be generated. Please try again.",
+      };
+    }
+  } catch (error) {
+    console.log(error);
     return {
       success: false,
       error: "Image could not be generated. Please try again.",

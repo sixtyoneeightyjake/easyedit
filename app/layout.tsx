@@ -4,6 +4,7 @@ import "./globals.css";
 import { Logo } from "./Logo";
 import PlausibleProvider from "next-plausible";
 import { UserAPIKey } from "./UserAPIKey";
+import { Toaster } from "@/components/ui/sonner";
 
 const kulimPark = Kulim_Park({
   variable: "--font-kulim-park",
@@ -73,6 +74,8 @@ export default function RootLayout({
         </header>
 
         <main className="mt-4">{children}</main>
+
+        <Toaster />
       </body>
     </html>
   );
