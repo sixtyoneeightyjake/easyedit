@@ -5,6 +5,8 @@ import { Logo } from "./Logo";
 import PlausibleProvider from "next-plausible";
 import { UserAPIKey } from "./UserAPIKey";
 import { Toaster } from "@/components/ui/sonner";
+import GitHub from "./components/GitHubIcon";
+import XformerlyTwitter from "./components/TwitterIcon";
 
 const kulimPark = Kulim_Park({
   variable: "--font-kulim-park",
@@ -62,7 +64,7 @@ export default function RootLayout({
       <head>
         <PlausibleProvider domain="easyedit.io" />
       </head>
-      <body className="antialiased">
+      <body className="flex min-h-dvh w-full flex-col antialiased">
         <header className="relative flex p-4 text-center text-white">
           <UserAPIKey />
 
@@ -74,9 +76,40 @@ export default function RootLayout({
           <div></div>
         </header>
 
-        <main className="mt-4">{children}</main>
+        <main className="flex grow flex-col items-center justify-center pt-4 pb-12">
+          <div className="w-full">{children}</div>
+        </main>
 
         <Toaster />
+
+        <footer className="flex flex-col items-center p-4 max-md:gap-4 md:flex-row md:justify-between">
+          <p className="text-sm text-gray-400">
+            Powered by{" "}
+            <a
+              href="https://www.together.ai/blog/flux-1-kontext"
+              target="_blank"
+              className="text-gray-200 underline underline-offset-2"
+            >
+              Together.ai & Flux
+            </a>
+          </p>
+          <div className="flex gap-3 text-sm">
+            <a
+              href=""
+              className="flex h-7 items-center gap-1 rounded border-[0.5px] border-gray-700 px-2.5 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-300"
+            >
+              <GitHub className="size-[10px]" />
+              GitHub
+            </a>
+            <a
+              href=""
+              className="flex h-7 items-center gap-1 rounded border-[0.5px] border-gray-700 px-2.5 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-300"
+            >
+              <XformerlyTwitter className="size-[10px]" />
+              Twitter
+            </a>
+          </div>
+        </footer>
       </body>
     </html>
   );

@@ -34,6 +34,7 @@ export function UserAPIKey() {
       <input
         type="password"
         value={userAPIKey}
+        autoComplete="off"
         onChange={(e) => setUserAPIKey(e.target.value)}
         placeholder="API key"
         className="rounded border-[0.5px] border-gray-700 bg-gray-900 px-2 py-1 text-sm focus-visible:outline focus-visible:outline-gray-200"

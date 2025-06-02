@@ -176,13 +176,13 @@ export default function Home() {
                   className="object-contain max-md:h-[50vh] md:max-h-[80vh]"
                 />
 
-                <div
+                {/* <div
                   className="pointer-events-none absolute inset-0 hidden rounded-lg opacity-0 transition group-hover:opacity-100 md:block"
                   style={{
                     background:
                       "linear-gradient(rgba(0,0,0,.34) 0%,rgba(0,0,0,.337) 3.5%,rgba(0,0,0,.325) 7%,rgba(0,0,0,.306) 10.35%,rgba(0,0,0,.286) 13.85%,rgba(0,0,0,.263) 17.35%,rgba(0,0,0,.235) 20.85%,rgba(0,0,0,.21) 24.35%,rgba(0,0,0,.19) 27.85%,rgba(0,0,0,.165) 31.35%,rgba(0,0,0,.145) 34.85%,rgba(0,0,0,.125) 38.35%,rgba(0,0,0,.114) 41.85%,rgba(0,0,0,.1) 45.35% 48.85%,rgba(0,0,0,.1) 52.35%,rgba(0,0,0,.114) 55.85%,rgba(0,0,0,.125) 59.35%,rgba(0,0,0,.145) 62.85%,rgba(0,0,0,.165) 66.35%,rgba(0,0,0,.19) 69.85%,rgba(0,0,0,.21) 73.35%,rgba(0,0,0,.235) 76.85%,rgba(0,0,0,.263) 80.35%,rgba(0,0,0,.286) 83.85%,rgba(0,0,0,.306) 87.35%,rgba(0,0,0,.325) 90.85%,rgba(0,0,0,.337) 94.35%,rgba(0,0,0,.345) 97.85%,rgba(0,0,0,.35) 100%)",
                   }}
-                />
+                /> */}
 
                 <div className="absolute inset-x-0 bottom-0 flex justify-between gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
                   <div className="flex gap-4">
@@ -199,10 +199,8 @@ export default function Home() {
                   </div>
                   <button
                     title="Download this image"
-                    // download="image.png"
-                    // rel="nofollow"
                     onClick={handleDownload}
-                    className="flex size-8 cursor-pointer items-center justify-center rounded-full bg-gray-300 text-gray-900 transition hover:bg-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="flex size-8 cursor-pointer items-center justify-center rounded-full bg-white text-gray-900 transition hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     <DownloadIcon />
                   </button>

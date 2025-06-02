@@ -2,10 +2,8 @@
 
 import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
 import { Ratelimit } from "@upstash/ratelimit";
-// import Together from "together-ai";
 import { Redis } from "@upstash/redis";
 import { headers } from "next/headers";
-// import { fal } from "@fal-ai/client";
 
 let ratelimit: Ratelimit | undefined;
 

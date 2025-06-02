@@ -37,11 +37,11 @@ export function SampleImages({
         Nothing to upload?{" "}
         <span className="text-gray-300">Try a sample image:</span>
       </p>
-      <div className="mt-3 flex gap-4">
+      <div className="mt-3 flex gap-4 overflow-x-auto max-md:-mx-4 max-md:px-4 max-md:pb-4">
         {sampleImages.map((sample) => (
           <button
             key={sample.url}
-            className="group relative shrink-0 cursor-pointer rounded-lg bg-gray-700"
+            className="group relative shrink-0 cursor-pointer overflow-hidden rounded-lg bg-gray-700"
             onClick={() => {
               onSelect({
                 url: sample.url,
