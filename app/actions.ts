@@ -4,6 +4,7 @@ import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { headers } from "next/headers";
+import { z } from "zod";
 
 let ratelimit: Ratelimit | undefined;
 
@@ -18,22 +19,20 @@ if (process.env.UPSTASH_REDIS_REST_URL) {
   });
 }
 
-export async function generateImage({
-  imageUrl,
-  prompt,
-  width,
-  height,
-  userAPIKey,
-}: {
-  imageUrl: string;
-  prompt: string;
-  width: number;
-  height: number;
-  userAPIKey?: string;
-}): Promise<
-  { success: true; url: string } | { success: false; error: string }
-> {
-  // TODO: Validate params
+const schema = z.object({
+  imageUrl: z.string(),
+  prompt: z.string(),
+  width: z.number(),
+  height: z.number(),
+  userAPIKey: z.string().optional(),
+});
+
+export async function generateImage(
+  unsafeData: z.infer<typeof schema>,
+): Promise<{ success: true; url: string } | { success: false; error: string }> {
+  const { imageUrl, prompt, width, height, userAPIKey } =
+    schema.parse(unsafeData);
+
   if (ratelimit && !userAPIKey) {
     const identifier = await getIPAddress();
 

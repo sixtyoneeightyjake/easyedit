@@ -23,7 +23,8 @@
     "react-dom": "^19.0.0",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.0",
-    "together-ai": "^0.16.0"
+    "together-ai": "^0.16.0",
+    "zod": "^3.25.48"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

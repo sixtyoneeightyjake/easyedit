@@ -185,13 +185,14 @@ export default function Home() {
                 /> */}
 
                 <div className="absolute inset-x-0 bottom-0 flex justify-between gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
-                  <div className="flex gap-4">
+                  <div className="flex items-center gap-4">
                     <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-black/75 font-mono text-xs ring ring-white/10">
                       v{activeImage.version}
                     </div>
                     {activeImage.prompt && (
                       <div>
-                        <p className="text-sm/8 text-gray-50 md:text-base/8">
+                        <p className="text-xs text-gray-400">Prompt used:</p>
+                        <p className="text-sm text-gray-50 md:text-base">
                           {activeImage.prompt}
                         </p>
                       </div>

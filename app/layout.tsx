@@ -76,7 +76,7 @@ export default function RootLayout({
           <div></div>
         </header>
 
-        <main className="flex grow flex-col items-center justify-center pt-4 pb-12">
+        <main className="flex grow flex-col items-center justify-center pt-4 md:pb-12">
           <div className="w-full">{children}</div>
         </main>
 
