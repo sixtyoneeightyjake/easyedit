@@ -4,7 +4,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 // import Together from "together-ai";
 import { Redis } from "@upstash/redis";
 import { headers } from "next/headers";
-import { fal } from "@fal-ai/client";
+// import { fal } from "@fal-ai/client";
 
 let ratelimit: Ratelimit | undefined;
 
@@ -53,39 +53,41 @@ export async function generateImage({
   /*
     Trying kontext on Together - Not working
   */
-  // const response = await fetch(
-  //   "https://api.together.ai/v1/images/generations",
-  //   {
-  //     method: "post",
-  //     headers: {
-  //       Authorization: `Bearer ${process.env.TOGETHER_API_KEY}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       model: "black-forest-labs/FLUX.1-kontext-max",
-  //       // model: "black-forest-labs/FLUX.1-kontext-pro",
-  //       // max_tokens: 32,
-  //       steps: 28,
-  //       prompt,
-  //       // width: adjustedDimensions.width,
-  //       // height: adjustedDimensions.height,
-  //       image_url: imageUrl,
-  //       // input_image: imageUrl,
-  //       aspect_ratio: "match_input_image",
-  //       // messages: [
-  //       //   {
-  //       //     role: "user",
-  //       //     content: [
-  //       //       { type: "text", text: prompt },
-  //       //       { type: "image_url", image_url: { url: imageUrl } },
-  //       //     ],
-  //       //   },
-  //       // ],
-  //     }),
-  //   },
-  // );
+  const response = await fetch(
+    "https://api.together.ai/v1/images/generations",
+    {
+      method: "post",
+      headers: {
+        Authorization: `Bearer ${process.env.TOGETHER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "black-forest-labs/FLUX.1-kontext-max",
+        // model: "black-forest-labs/FLUX.1-kontext-pro",
+        // max_tokens: 32,
+        steps: 28,
+        prompt,
+        width: adjustedDimensions.width,
+        height: adjustedDimensions.height,
+        image_url: imageUrl,
+        // input_image: imageUrl,
+        // aspect_ratio: "match_input_image",
+        // messages: [
+        //   {
+        //     role: "user",
+        //     content: [
+        //       { type: "text", text: prompt },
+        //       { type: "image_url", image_url: { url: imageUrl } },
+        //     ],
+        //   },
+        // ],
+      }),
+    },
+  );
 
-  // const json = await response.json();
+  const json = await response.json();
+  // console.log(json);
+  const url = json.data[0].url;
   // return json.data[0].url;
 
   /*
@@ -93,24 +95,24 @@ export async function generateImage({
 
   */
 
-  console.log(1);
-  const result = await fal.subscribe("fal-ai/flux-pro/kontext", {
-    input: {
-      prompt,
-      image_url: imageUrl,
-      width: adjustedDimensions.width,
-      height: adjustedDimensions.height,
-    },
-    logs: true,
-    onQueueUpdate: (update) => {
-      if (update.status === "IN_PROGRESS") {
-        update.logs.map((log) => log.message).forEach(console.log);
-      }
-    },
-  });
-  console.log(2);
+  // console.log(1);
+  // const result = await fal.subscribe("fal-ai/flux-pro/kontext", {
+  //   input: {
+  //     prompt,
+  //     image_url: imageUrl,
+  //     width: adjustedDimensions.width,
+  //     height: adjustedDimensions.height,
+  //   },
+  //   logs: true,
+  //   onQueueUpdate: (update) => {
+  //     if (update.status === "IN_PROGRESS") {
+  //       update.logs.map((log) => log.message).forEach(console.log);
+  //     }
+  //   },
+  // });
+  // console.log(2);
 
-  const url = result.data.images[0].url;
+  // const url = result.data.images[0].url;
 
   if (url) {
     return { success: true, url };

@@ -2,9 +2,9 @@ import Image from "next/image";
 
 const sampleImages = [
   {
-    url: "https://napkinsdev.s3.us-east-1.amazonaws.com/next-s3-uploads/797ce606-060c-4eec-8c3b-b643db1191ea/free-photo-of-casual-man-working-on-laptop-in-cozy-cafe.jpeg",
-    height: 7008,
-    width: 3944,
+    url: "https://napkinsdev.s3.us-east-1.amazonaws.com/next-s3-uploads/39f8ea0e-000f-49bc-9f52-ed1cfb4e4230/free-photo-of-casual-man-working-on-laptop-in-cozy-cafe.jpeg",
+    height: 1752,
+    width: 986,
   },
   {
     url: "https://napkinsdev.s3.us-east-1.amazonaws.com/next-s3-uploads/2aa11b9d-c3fa-422b-bf52-d324ad7da6e2/sample-3.png",
