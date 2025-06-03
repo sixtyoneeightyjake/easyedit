@@ -7,7 +7,7 @@ const sampleImages = [
     width: 986,
   },
   {
-    url: "https://napkinsdev.s3.us-east-1.amazonaws.com/next-s3-uploads/2aa11b9d-c3fa-422b-bf52-d324ad7da6e2/sample-3.png",
+    url: "https://napkinsdev.s3.us-east-1.amazonaws.com/next-s3-uploads/4e742e29-ddbc-4493-b2a3-95c15d8d0a2c/image-(6).png",
     height: 1365,
     width: 2048,
   },
