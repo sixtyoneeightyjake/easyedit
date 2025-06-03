@@ -90,7 +90,15 @@ export default function RootLayout({
               target="_blank"
               className="text-gray-200 underline underline-offset-2"
             >
-              Together.ai & Flux
+              Flux Kontext
+            </a>{" "}
+            on{" "}
+            <a
+              href="https://togetherai.link"
+              target="_blank"
+              className="text-gray-200 underline underline-offset-2"
+            >
+              Together AI
             </a>
           </p>
           <div className="flex gap-3 text-sm">
