@@ -1,12 +1,10 @@
 "use server";
 
-import Together from "together-ai";
+import { getTogether } from "@/lib/get-together";
+import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import invariant from "tiny-invariant";
-import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
-
-const together = new Together();
 
 const schema = z.array(z.string());
 const jsonSchema = zodToJsonSchema(schema, { target: "openAi" });
@@ -28,9 +26,7 @@ export async function getSuggestions(
     }
   }
 
-  if (userAPIKey) {
-    together.apiKey = userAPIKey;
-  }
+  const together = getTogether(userAPIKey);
 
   const response = await together.chat.completions.create({
     model: "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",

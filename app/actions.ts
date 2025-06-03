@@ -1,11 +1,10 @@
 "use server";
 
 import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
+import { getTogether } from "@/lib/get-together";
 import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
-import Together from "together-ai";
 import { z } from "zod";
 
-const together = new Together();
 const ratelimit = getRateLimiter();
 
 const schema = z.object({
@@ -35,10 +34,7 @@ export async function generateImage(
     }
   }
 
-  if (userAPIKey) {
-    together.apiKey = userAPIKey;
-  }
-
+  const together = getTogether(userAPIKey);
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
   let url;
