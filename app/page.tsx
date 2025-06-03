@@ -181,7 +181,7 @@ export default function Home() {
                   className="object-contain max-md:h-[50vh] md:max-h-[70vh]"
                 />
 
-                <div className="absolute inset-x-0 bottom-0 flex justify-between gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
                   <div className="flex items-center gap-4">
                     <div className="py-1">
                       <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-black/75 font-mono text-xs ring ring-white/10">
@@ -200,7 +200,7 @@ export default function Home() {
                   <button
                     title="Download this image"
                     onClick={handleDownload}
-                    className="flex size-8 cursor-pointer items-center justify-center rounded-full bg-white text-gray-900 transition hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-gray-900 transition hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     <DownloadIcon />
                   </button>
