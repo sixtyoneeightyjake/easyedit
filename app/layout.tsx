@@ -103,7 +103,7 @@ export default function RootLayout({
           </p>
           <div className="flex gap-3 text-sm">
             <a
-              href="https://github.com/Nutlope/editease"
+              href="https://github.com/Nutlope/easyedit"
               target="_blank"
               className="flex h-7 items-center gap-1 rounded border-[0.5px] border-gray-700 px-2.5 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-300"
             >
@@ -111,7 +111,7 @@ export default function RootLayout({
               GitHub
             </a>
             <a
-              href="https://x.com/togethercompute"
+              href="https://x.com/nutlope"
               target="_blank"
               className="flex h-7 items-center gap-1 rounded border-[0.5px] border-gray-700 px-2.5 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-300"
             >
