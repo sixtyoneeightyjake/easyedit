@@ -102,7 +102,8 @@ export default function RootLayout({
               GitHub
             </a>
             <a
-              href=""
+              href="https://x.com/togethercompute"
+              target="_blank"
               className="flex h-7 items-center gap-1 rounded border-[0.5px] border-gray-700 px-2.5 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-300"
             >
               <XformerlyTwitter className="size-[10px]" />
