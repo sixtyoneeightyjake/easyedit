@@ -13,6 +13,8 @@ import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
 import { DownloadIcon } from "./components/DownloadIcon";
 import { toast } from "sonner";
 import { PlusIcon } from "./components/PlusIcon";
+import { SuggestedPrompts } from "./suggested-prompts/SuggestedPrompts";
+import { flushSync } from "react-dom";
 
 export default function Home() {
   const [images, setImages] = useState<
@@ -25,9 +27,13 @@ export default function Home() {
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [prompt, setPrompt] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const activeImage = images.find((i) => i.url === activeImageUrl);
-  const latestImageIsActive = activeImage === images.at(-1);
+  const lastImage = images.at(-1);
+  const latestImageIsActive =
+    activeImage && lastImage && activeImage === lastImage;
 
   const adjustedImageDimensions = getAdjustedDimensions(
     imageData.width,
@@ -110,9 +116,10 @@ export default function Home() {
                 </span>
                 <button
                   className={clsx(
-                    activeImageUrl === image.url &&
-                      "max-md:outline max-md:outline-offset-2 max-md:outline-white",
-                    "cursor-pointer overflow-hidden rounded-md focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white",
+                    activeImageUrl === image.url
+                      ? "max-md:border-white"
+                      : "max-md:border-transparent",
+                    "cursor-pointer overflow-hidden rounded-md focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white max-md:border",
                   )}
                   onClick={() => setActiveImageUrl(image.url)}
                 >
@@ -171,7 +178,7 @@ export default function Home() {
                       adjustedImageDimensions.height,
                   }}
                   alt="uploaded image"
-                  className="object-cover max-md:h-[50vh] md:max-h-[80vh]"
+                  className="object-contain max-md:h-[50vh] md:max-h-[70vh]"
                 />
 
                 <div className="absolute inset-x-0 bottom-0 flex justify-between gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
@@ -211,24 +218,22 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="mt-4 h-12">
+              <div className="mt-4">
                 {latestImageIsActive ? (
                   <form
                     className="relative"
                     key={activeImageUrl}
+                    ref={formRef}
                     action={(formData) => {
                       startTransition(async () => {
                         const prompt = formData.get("prompt") as string;
-                        const lastImage = images.at(-1);
-                        if (!lastImage) return;
 
                         const generation = await generateImage({
                           imageUrl: lastImage.url,
                           prompt,
                           width: imageData.width,
                           height: imageData.height,
-                          userAPIKey:
-                            localStorage.getItem("togetherApiKey") || "",
+                          userAPIKey: localStorage.getItem("togetherApiKey"),
                         });
 
                         if (generation.success) {
@@ -246,6 +251,7 @@ export default function Home() {
                             },
                           ]);
                           setActiveImageUrl(generation.url);
+                          setPrompt("");
                         } else {
                           toast(generation.error);
                         }
@@ -259,6 +265,8 @@ export default function Home() {
                         name="prompt"
                         autoFocus
                         className="mr-2 w-full px-3 py-4 pr-14 focus-visible:outline-none disabled:opacity-50 md:px-4 md:py-5"
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
                         placeholder="Tell us the changes you want..."
                         required
                       />
@@ -276,10 +284,20 @@ export default function Home() {
                           />
                         </svg>
                       </button>
+
+                      <SuggestedPrompts
+                        imageUrl={lastImage.url}
+                        onSelect={(suggestion) => {
+                          flushSync(() => {
+                            setPrompt(suggestion);
+                          });
+                          formRef.current?.requestSubmit();
+                        }}
+                      />
                     </Fieldset>
                   </form>
                 ) : (
-                  <p className="text-base/12">
+                  <p className="pb-19 text-base/12 md:pb-25">
                     <button
                       onClick={() => {
                         setActiveImageUrl(images.at(-1)?.url ?? null);

@@ -1,30 +1,17 @@
 "use server";
 
 import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
-import { headers } from "next/headers";
+import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
 import { z } from "zod";
 
-let ratelimit: Ratelimit | undefined;
-
-// Add rate limiting if Upstash API keys are set, otherwise skip
-if (process.env.UPSTASH_REDIS_REST_URL) {
-  ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    // Allow 4 requests per day (~2-4 prompts), then need to use API key
-    limiter: Ratelimit.fixedWindow(4, "1 d"),
-    analytics: true,
-    prefix: "easyedit",
-  });
-}
+const ratelimit = getRateLimiter();
 
 const schema = z.object({
   imageUrl: z.string(),
   prompt: z.string(),
   width: z.number(),
   height: z.number(),
-  userAPIKey: z.string().optional(),
+  userAPIKey: z.string().nullable(),
 });
 
 export async function generateImage(
@@ -34,9 +21,9 @@ export async function generateImage(
     schema.parse(unsafeData);
 
   if (ratelimit && !userAPIKey) {
-    const identifier = await getIPAddress();
+    const ipAddress = await getIPAddress();
 
-    const { success } = await ratelimit.limit(identifier);
+    const { success } = await ratelimit.limit(ipAddress);
     if (!success) {
       return {
         success: false,
@@ -46,6 +33,8 @@ export async function generateImage(
     }
   }
 
+  const apiKey = userAPIKey ?? process.env.TOGETHER_API_KEY;
+
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
   try {
@@ -54,7 +43,7 @@ export async function generateImage(
       {
         method: "post",
         headers: {
-          Authorization: `Bearer ${process.env.TOGETHER_API_KEY}`,
+          Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -70,7 +59,6 @@ export async function generateImage(
     );
 
     const json = await response.json();
-    console.log(json);
     const url = json.data[0].url;
 
     if (url) {
@@ -88,16 +76,4 @@ export async function generateImage(
       error: "Image could not be generated. Please try again.",
     };
   }
-}
-
-async function getIPAddress() {
-  const FALLBACK_IP_ADDRESS = "0.0.0.0";
-  const headersList = await headers();
-  const forwardedFor = headersList.get("x-forwarded-for");
-
-  if (forwardedFor) {
-    return forwardedFor.split(",")[0] ?? FALLBACK_IP_ADDRESS;
-  }
-
-  return headersList.get("x-real-ip") ?? FALLBACK_IP_ADDRESS;
 }
