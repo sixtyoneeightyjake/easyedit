@@ -20,7 +20,7 @@ const syneMono = Syne_Mono({
   weight: ["400"],
 });
 
-const title = "EasyEdit – edit images in one prompt";
+const title = "EasyEdit – Edit images with one prompt";
 const description = "The easiest way to edit images in one prompt";
 const url = "https://www.easyedit.io/";
 const ogimage = "https://www.easyedit.io/og-image.png";
