@@ -2,8 +2,10 @@
 
 import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
 import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
+import Together from "together-ai";
 import { z } from "zod";
 
+const together = new Together();
 const ratelimit = getRateLimiter();
 
 const schema = z.object({
@@ -33,43 +35,30 @@ export async function generateImage(
     }
   }
 
-  const apiKey = userAPIKey ?? process.env.TOGETHER_API_KEY;
+  if (userAPIKey) {
+    together.apiKey = userAPIKey;
+  }
 
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
+  let url;
   try {
-    const response = await fetch(
-      "https://api.together.ai/v1/images/generations",
-      {
-        method: "post",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          // model: "black-forest-labs/FLUX.1-kontext-max",
-          model: "black-forest-labs/FLUX.1-kontext-pro",
-          prompt,
-          width: adjustedDimensions.width,
-          height: adjustedDimensions.height,
-          image_url: imageUrl,
-        }),
-      },
-    );
+    const json = await together.images.create({
+      model: "black-forest-labs/FLUX.1-kontext-pro",
+      prompt,
+      width: adjustedDimensions.width,
+      height: adjustedDimensions.height,
+      image_url: imageUrl,
+    });
 
-    const json = await response.json();
-    const url = json.data[0].url;
-
-    if (url) {
-      return { success: true, url };
-    } else {
-      return {
-        success: false,
-        error: "Image could not be generated. Please try again.",
-      };
-    }
+    url = json.data[0].url;
   } catch (error) {
     console.log(error);
+  }
+
+  if (url) {
+    return { success: true, url };
+  } else {
     return {
       success: false,
       error: "Image could not be generated. Please try again.",
