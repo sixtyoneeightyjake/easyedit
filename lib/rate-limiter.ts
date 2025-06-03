@@ -10,8 +10,8 @@ export function getRateLimiter() {
   if (process.env.UPSTASH_REDIS_REST_URL) {
     ratelimit = new Ratelimit({
       redis: Redis.fromEnv(),
-      // Allow 4 requests per day (~2-4 prompts), then need to use API key
-      limiter: Ratelimit.fixedWindow(4, "1 d"),
+      // Allow 1 request per day
+      limiter: Ratelimit.fixedWindow(1, "1 d"),
       analytics: true,
       prefix: "easyedit",
     });
