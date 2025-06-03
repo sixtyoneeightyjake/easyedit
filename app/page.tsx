@@ -260,11 +260,23 @@ export default function Home() {
                   >
                     <Fieldset className="relative rounded-xl bg-gray-900">
                       <div className="pointer-events-none absolute inset-px rounded-xl ring ring-white/10" />
+                      {/* Mobile: no autofocus */}
+                      <input
+                        type="text"
+                        name="prompt"
+                        className="mr-2 w-full px-3 py-4 pr-14 focus-visible:outline-none disabled:opacity-50 md:hidden"
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        placeholder="Tell us the changes you want..."
+                        required
+                      />
+
+                      {/* Desktop: autofocus */}
                       <input
                         type="text"
                         name="prompt"
                         autoFocus
-                        className="mr-2 w-full px-3 py-4 pr-14 focus-visible:outline-none disabled:opacity-50 md:px-4 md:py-5"
+                        className="mr-2 w-full px-4 py-5 pr-14 focus-visible:outline-none disabled:opacity-50 max-md:hidden"
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
                         placeholder="Tell us the changes you want..."
