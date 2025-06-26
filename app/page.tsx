@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { getImageProps } from "next/image";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition, useEffect } from "react";
 import { generateImage } from "./actions";
 import { ImageUploader } from "./ImageUploader";
 import { Fieldset } from "./Fieldset";
@@ -12,7 +12,6 @@ import { SampleImages } from "./SampleImages";
 import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
 import { DownloadIcon } from "./components/DownloadIcon";
 import { toast } from "sonner";
-import { PlusIcon } from "./components/PlusIcon";
 import { SuggestedPrompts } from "./suggested-prompts/SuggestedPrompts";
 import { flushSync } from "react-dom";
 
@@ -39,6 +38,17 @@ export default function Home() {
     imageData.width,
     imageData.height,
   );
+
+  useEffect(() => {
+    function handleNewSession() {
+      setImages([]);
+      setActiveImageUrl(null);
+    }
+    window.addEventListener("new-image-session", handleNewSession);
+    return () => {
+      window.removeEventListener("new-image-session", handleNewSession);
+    };
+  }, []);
 
   async function handleDownload() {
     if (!activeImage) return;
@@ -78,19 +88,6 @@ export default function Home() {
 
   return (
     <>
-      <div className="absolute top-4 right-4">
-        <button
-          onClick={() => {
-            setImages([]);
-            setActiveImageUrl(null);
-          }}
-          className="flex h-8 cursor-pointer items-center gap-2 rounded border-[0.5px] border-gray-700 bg-gray-900 px-3.5 text-gray-200 transition hover:bg-gray-800"
-        >
-          <PlusIcon />
-          New
-        </button>
-      </div>
-
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 md:flex-row">
         <div
           ref={scrollRef}
