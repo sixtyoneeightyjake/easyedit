@@ -61,11 +61,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${kulimPark.variable} ${syneMono.variable}`}>
+    <html
+      lang="en"
+      className={`${kulimPark.variable} ${syneMono.variable} h-dvh overflow-hidden`}
+    >
       <head>
         <PlausibleProvider domain="easyedit.io" />
       </head>
-      <body className="flex min-h-dvh w-full flex-col antialiased">
+      <body className="flex h-dvh w-full flex-col overflow-hidden antialiased">
         <header className="relative flex p-4 text-center text-white">
           <UserAPIKey />
 
@@ -80,8 +83,8 @@ export default function RootLayout({
           <div></div>
         </header>
 
-        <main className="flex grow flex-col items-center justify-center pt-4 md:pb-12">
-          <div className="w-full">{children}</div>
+        <main className="flex flex-1 flex-col items-center justify-center overflow-hidden pt-4 md:pb-12">
+          <div className="h-full w-full">{children}</div>
         </main>
 
         <Toaster />
