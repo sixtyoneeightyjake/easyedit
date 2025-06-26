@@ -2,6 +2,7 @@
 
 import { getTogether } from "@/lib/get-together";
 import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
+import dedent from "dedent";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
@@ -29,18 +30,19 @@ export async function getSuggestions(
   const together = getTogether(userAPIKey);
 
   const response = await together.chat.completions.create({
-    model: "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
-    response_format: { type: "json_object", schema: jsonSchema },
+    model: "Qwen/Qwen2.5-VL-72B-Instruct",
     messages: [
       {
         role: "system",
-        content: `
+        content: dedent`
         # General Instructions
           You will be shown an image that a user wants to edit using AI-powered prompting. Analyze the image and suggest exactly 3 simple, practical edits that would improve or meaningfully change the image. Each suggestion should be:
 
 - Specific and actionable (not vague)
 - Achievable with standard image editing AI
 - Varied in type (e.g., lighting, objects, style, composition)
+
+Please keep the suggestions short and concise, about 5-8 words each.
 
 Format your response as valid JSON with this structure:
           [
@@ -64,6 +66,10 @@ With FLUX.1 Kontext you can modify an input image via simple text instructions, 
 - Iterate: modify step by step
 
 Flux.1 Kontext allows you to iteratively add more instructions and build on previous edits, refining your creation step-by-step with minimal latency, while preserving image quality and character consistency.
+
+# Final instructions.
+
+ONLY RESPOND IN JSON.
           `,
       },
       {
@@ -78,6 +84,7 @@ Flux.1 Kontext allows you to iteratively add more instructions and build on prev
         ],
       },
     ],
+    response_format: { type: "json_schema", schema: jsonSchema },
   });
 
   if (!response?.choices?.[0]?.message?.content) return [];

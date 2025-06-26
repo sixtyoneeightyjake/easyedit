@@ -211,8 +211,11 @@ export default function Home() {
                 {pending && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gray-900/75">
                     <Spinner className="size-6 text-white" />
-                    <p className="text-xl text-white">
-                      Working our pixel magic...
+                    <p className="animate-pulse text-xl text-white">
+                      Editing your image...
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      This can take up to 15 seconds.
                     </p>
                   </div>
                 )}

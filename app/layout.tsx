@@ -7,6 +7,7 @@ import { UserAPIKey } from "./UserAPIKey";
 import { Toaster } from "@/components/ui/sonner";
 import GitHub from "./components/GitHubIcon";
 import XformerlyTwitter from "./components/TwitterIcon";
+import Link from "next/link";
 
 const kulimPark = Kulim_Park({
   variable: "--font-kulim-park",
@@ -68,10 +69,13 @@ export default function RootLayout({
         <header className="relative flex p-4 text-center text-white">
           <UserAPIKey />
 
-          <div className="absolute left-1/2 flex grow -translate-x-1/2 items-center gap-2 text-lg max-md:hidden">
+          <Link
+            href="/"
+            className="absolute left-1/2 flex grow -translate-x-1/2 items-center gap-2 text-lg max-md:hidden"
+          >
             <Logo />
             EasyEdit
-          </div>
+          </Link>
 
           <div></div>
         </header>
