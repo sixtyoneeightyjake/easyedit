@@ -41,6 +41,7 @@ export async function generateImage(
   try {
     const json = await together.images.create({
       model: "black-forest-labs/FLUX.1-kontext-dev",
+      // model: "black-forest-labs/FLUX.1-kontext-pro",
       prompt,
       width: adjustedDimensions.width,
       height: adjustedDimensions.height,

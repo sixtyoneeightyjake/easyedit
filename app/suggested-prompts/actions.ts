@@ -5,10 +5,10 @@ import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
 import dedent from "dedent";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
+// import { zodToJsonSchema } from "zod-to-json-schema";
 
 const schema = z.array(z.string());
-const jsonSchema = zodToJsonSchema(schema, { target: "openAi" });
+// const jsonSchema = zodToJsonSchema(schema, { target: "openAi" });
 
 const ratelimit = getRateLimiter();
 
@@ -69,7 +69,7 @@ Flux.1 Kontext allows you to iteratively add more instructions and build on prev
 
 # Final instructions.
 
-ONLY RESPOND IN JSON.
+ONLY RESPOND IN JSON. NOTHING ELSE.
           `,
       },
       {
@@ -84,7 +84,7 @@ ONLY RESPOND IN JSON.
         ],
       },
     ],
-    response_format: { type: "json_schema", schema: jsonSchema },
+    // response_format: { type: "json_schema", schema: jsonSchema },
   });
 
   if (!response?.choices?.[0]?.message?.content) return [];
