@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
@@ -13,12 +14,18 @@ const schema = z.object({
   width: z.number(),
   height: z.number(),
   userAPIKey: z.string().nullable(),
+  model: z
+    .enum([
+      "black-forest-labs/FLUX.1-kontext-dev",
+      "black-forest-labs/FLUX.1-kontext-pro",
+    ])
+    .default("black-forest-labs/FLUX.1-kontext-dev"),
 });
 
 export async function generateImage(
   unsafeData: z.infer<typeof schema>,
 ): Promise<{ success: true; url: string } | { success: false; error: string }> {
-  const { imageUrl, prompt, width, height, userAPIKey } =
+  const { imageUrl, prompt, width, height, userAPIKey, model } =
     schema.parse(unsafeData);
 
   if (ratelimit && !userAPIKey) {
@@ -38,10 +45,10 @@ export async function generateImage(
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
   let url;
+  let errorMessage;
   try {
     const json = await together.images.create({
-      model: "black-forest-labs/FLUX.1-kontext-dev",
-      // model: "black-forest-labs/FLUX.1-kontext-pro",
+      model,
       prompt,
       width: adjustedDimensions.width,
       height: adjustedDimensions.height,
@@ -49,8 +56,16 @@ export async function generateImage(
     });
 
     url = json.data[0].url;
-  } catch (error) {
-    console.log(error);
+  } catch (e: any) {
+    console.log(e);
+    // if the error contains "403", then it's a rate limit error
+    if (e.toString().includes("403")) {
+      return {
+        success: false,
+        error:
+          "You need a paid Together AI account to use the Pro model. Please upgrade by purchasing credits here: https://api.together.xyz/settings/billing.",
+      };
+    }
   }
 
   if (url) {

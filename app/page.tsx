@@ -28,6 +28,11 @@ export default function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const [selectedModel, setSelectedModel] = useState<
+    | "black-forest-labs/FLUX.1-kontext-dev"
+    | "black-forest-labs/FLUX.1-kontext-pro"
+  >("black-forest-labs/FLUX.1-kontext-dev");
+  const [hasApiKey, setHasApiKey] = useState(false);
 
   const activeImage = images.find((i) => i.url === activeImageUrl);
   const lastImage = images.at(-1);
@@ -49,6 +54,32 @@ export default function Home() {
       window.removeEventListener("new-image-session", handleNewSession);
     };
   }, []);
+
+  useEffect(() => {
+    const checkApiKey = () => {
+      const apiKey = localStorage.getItem("togetherApiKey");
+      const hasKey = !!apiKey;
+      setHasApiKey(hasKey);
+
+      // If Pro model is selected but no API key, switch to Dev model
+      if (!hasKey && selectedModel === "black-forest-labs/FLUX.1-kontext-pro") {
+        setSelectedModel("black-forest-labs/FLUX.1-kontext-dev");
+      }
+    };
+
+    checkApiKey();
+
+    // Listen for storage events (when localStorage changes in other tabs)
+    window.addEventListener("storage", checkApiKey);
+
+    // Poll for API key changes every 500ms to catch changes in the same tab
+    const interval = setInterval(checkApiKey, 500);
+
+    return () => {
+      window.removeEventListener("storage", checkApiKey);
+      clearInterval(interval);
+    };
+  }, [selectedModel]);
 
   async function handleDownload() {
     if (!activeImage) return;
@@ -234,6 +265,7 @@ export default function Home() {
                           width: imageData.width,
                           height: imageData.height,
                           userAPIKey: localStorage.getItem("togetherApiKey"),
+                          model: selectedModel,
                         });
 
                         if (generation.success) {
@@ -258,6 +290,61 @@ export default function Home() {
                       });
                     }}
                   >
+                    <div className="mb-4">
+                      <label
+                        htmlFor="model-select"
+                        className="mb-2 block text-sm font-medium text-gray-300"
+                      >
+                        Model
+                      </label>
+                      <div className="relative">
+                        <select
+                          id="model-select"
+                          value={selectedModel}
+                          onChange={(e) =>
+                            setSelectedModel(
+                              e.target.value as typeof selectedModel,
+                            )
+                          }
+                          className="w-full appearance-none rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <option value="black-forest-labs/FLUX.1-kontext-dev">
+                            Flux Kontext Dev
+                          </option>
+                          <option
+                            value="black-forest-labs/FLUX.1-kontext-pro"
+                            disabled={!hasApiKey}
+                          >
+                            Flux Kontext Pro{" "}
+                            {!hasApiKey && "(Together API key required)"}
+                          </option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      {!hasApiKey &&
+                        selectedModel ===
+                          "black-forest-labs/FLUX.1-kontext-pro" && (
+                          <p className="mt-1 text-xs text-amber-400">
+                            Pro model requires an API key. Please add your
+                            Together AI API key to use this model.
+                          </p>
+                        )}
+                    </div>
+
                     <Fieldset className="relative rounded-xl bg-gray-900">
                       <div className="pointer-events-none absolute inset-px rounded-xl ring ring-white/10" />
                       {/* Mobile: no autofocus */}
