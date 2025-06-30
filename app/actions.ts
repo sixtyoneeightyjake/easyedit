@@ -45,7 +45,6 @@ export async function generateImage(
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
   let url;
-  let errorMessage;
   try {
     const json = await together.images.create({
       model,
