@@ -121,7 +121,7 @@ export default function Home() {
     link.href = url;
     // Use slugified prompt as filename prefix
     const slug = slugifyPrompt(activeImage.prompt);
-    link.download = `${slug}.${extension}`;
+    link.download = `v${activeImage.version}-${slug}.${extension}`;
     document.body.appendChild(link);
     link.click();
 
