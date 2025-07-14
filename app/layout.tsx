@@ -97,6 +97,8 @@ export default function RootLayout({
             </a>
             <a
               href="https://easyedit.io"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden h-8 cursor-pointer items-center gap-2 rounded border-[0.5px] border-gray-700 bg-gray-900 px-3.5 text-gray-200 transition hover:bg-gray-800 md:flex"
             >
               <PlusIcon />
