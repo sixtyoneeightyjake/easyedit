@@ -15,6 +15,17 @@ import { toast } from "sonner";
 import { SuggestedPrompts } from "./suggested-prompts/SuggestedPrompts";
 import { flushSync } from "react-dom";
 
+// Helper to slugify the prompt for filenames
+function slugifyPrompt(prompt?: string): string {
+  if (!prompt) return "image";
+  // Take first 8 words, join with dashes, remove non-alphanum, limit to 40 chars
+  const words = prompt.split(/\s+/).slice(0, 8);
+  let slug = words.join("-").toLowerCase();
+  slug = slug.replace(/[^a-z0-9\-]/g, "");
+  if (slug.length > 40) slug = slug.slice(0, 40);
+  return slug || "image";
+}
+
 export default function Home() {
   const [images, setImages] = useState<
     { url: string; version: number; prompt?: string }[]
@@ -108,7 +119,9 @@ export default function Home() {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `image.${extension}`;
+    // Use slugified prompt as filename prefix
+    const slug = slugifyPrompt(activeImage.prompt);
+    link.download = `${slug}.${extension}`;
     document.body.appendChild(link);
     link.click();
 
