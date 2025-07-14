@@ -69,6 +69,8 @@ export default function RootLayout({
         <header className="relative flex p-4 text-center text-white">
           <UserAPIKey />
           <a
+            target="_blank"
+            rel="noopener noreferrer"
             href="https://easyedit.io"
             className="absolute left-1/2 flex grow -translate-x-1/2 items-center gap-2 text-lg max-md:hidden"
           >
