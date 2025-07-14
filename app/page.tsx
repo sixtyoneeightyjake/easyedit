@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { getImageProps } from "next/image";
-import { useRef, useState, useTransition, useEffect } from "react";
+import { useRef, useState, useTransition, useEffect, useMemo } from "react";
 import { generateImage } from "./actions";
 import { ImageUploader } from "./ImageUploader";
 import { Fieldset } from "./Fieldset";
@@ -45,10 +45,10 @@ export default function Home() {
   >("black-forest-labs/FLUX.1-kontext-dev");
   const [hasApiKey, setHasApiKey] = useState(false);
 
-  const activeImage = images.find((i) => i.url === activeImageUrl);
-  const lastImage = images.at(-1);
-  const latestImageIsActive =
-    activeImage && lastImage && activeImage === lastImage;
+  const activeImage = useMemo(
+    () => images.find((i) => i.url === activeImageUrl),
+    [images, activeImageUrl],
+  );
 
   const adjustedImageDimensions = getAdjustedDimensions(
     imageData.width,
