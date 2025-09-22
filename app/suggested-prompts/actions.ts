@@ -1,7 +1,6 @@
 "use server";
 
 import { getTogether } from "@/lib/get-together";
-import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
 import dedent from "dedent";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -10,24 +9,10 @@ import { z } from "zod";
 const schema = z.array(z.string());
 // const jsonSchema = zodToJsonSchema(schema, { target: "openAi" });
 
-const ratelimit = getRateLimiter();
-
-export async function getSuggestions(
-  imageUrl: string,
-  userAPIKey: string | null,
-) {
+export async function getSuggestions(imageUrl: string) {
   invariant(typeof imageUrl === "string");
 
-  if (ratelimit && !userAPIKey) {
-    const ipAddress = await getIPAddress();
-
-    const { success } = await ratelimit.limit(`${ipAddress}-suggestions`);
-    if (!success) {
-      return [];
-    }
-  }
-
-  const together = getTogether(userAPIKey);
+  const together = getTogether();
 
   const response = await together.chat.completions.create({
     model: "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",

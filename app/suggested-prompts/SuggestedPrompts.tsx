@@ -28,10 +28,7 @@ export function SuggestedPrompts({
     let cachedSuggestions = cache.get(imageUrl);
 
     if (!cachedSuggestions) {
-      const newSuggestions = await getSuggestions(
-        imageUrl,
-        localStorage.getItem("togetherApiKey"),
-      );
+      const newSuggestions = await getSuggestions(imageUrl);
       cache.set(imageUrl, newSuggestions);
       cachedSuggestions = newSuggestions;
     }

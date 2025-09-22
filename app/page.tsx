@@ -39,11 +39,7 @@ export default function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
-  const [selectedModel, setSelectedModel] = useState<
-    | "black-forest-labs/FLUX.1-kontext-dev"
-    | "black-forest-labs/FLUX.1-kontext-pro"
-  >("black-forest-labs/FLUX.1-kontext-dev");
-  const [hasApiKey, setHasApiKey] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<"black-forest-labs/FLUX.1-kontext-dev">("black-forest-labs/FLUX.1-kontext-dev");
 
   const activeImage = useMemo(
     () => images.find((i) => i.url === activeImageUrl),
@@ -66,31 +62,7 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    const checkApiKey = () => {
-      const apiKey = localStorage.getItem("togetherApiKey");
-      const hasKey = !!apiKey;
-      setHasApiKey(hasKey);
 
-      // If Pro model is selected but no API key, switch to Dev model
-      if (!hasKey && selectedModel === "black-forest-labs/FLUX.1-kontext-pro") {
-        setSelectedModel("black-forest-labs/FLUX.1-kontext-dev");
-      }
-    };
-
-    checkApiKey();
-
-    // Listen for storage events (when localStorage changes in other tabs)
-    window.addEventListener("storage", checkApiKey);
-
-    // Poll for API key changes every 500ms to catch changes in the same tab
-    const interval = setInterval(checkApiKey, 500);
-
-    return () => {
-      window.removeEventListener("storage", checkApiKey);
-      clearInterval(interval);
-    };
-  }, [selectedModel]);
 
   async function handleDownload() {
     if (!activeImage) return;
@@ -182,9 +154,14 @@ export default function Home() {
         <div className="grow">
           {!activeImage ? (
             <>
-              <h1 className="mx-auto max-w-md text-center text-2xl text-balance text-white md:text-4xl">
-                Edit any image with a simple prompt
-              </h1>
+              <div className="flex flex-col items-center gap-4 text-center">
+                <p className="text-lg text-gray-400 md:text-xl">
+                  The easiest way to edit images
+                </p>
+                <p className="text-lg text-gray-400 md:text-xl">
+                  in one prompt
+                </p>
+              </div>
 
               <div className="mt-8">
                 <ImageUploader
@@ -208,6 +185,21 @@ export default function Home() {
             </>
           ) : (
             <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-white">
+                  Editing Image
+                </h2>
+                <button
+                  onClick={() => {
+                    setImages([]);
+                    setActiveImageUrl(null);
+                    setPrompt("");
+                  }}
+                  className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
+                >
+                  New Image
+                </button>
+              </div>
               <div className="group relative flex items-center justify-center overflow-hidden rounded-xl bg-gray-900">
                 <Image
                   width={imageData.width}
@@ -277,7 +269,6 @@ export default function Home() {
                           prompt,
                           width: imageData.width,
                           height: imageData.height,
-                          userAPIKey: localStorage.getItem("togetherApiKey"),
                           model: selectedModel,
                         });
 
@@ -303,61 +294,7 @@ export default function Home() {
                       });
                     }}
                   >
-                    <div className="mb-4">
-                      <label
-                        htmlFor="model-select"
-                        className="mb-2 block text-sm font-medium text-gray-300"
-                      >
-                        Model
-                      </label>
-                      <div className="relative">
-                        <select
-                          id="model-select"
-                          value={selectedModel}
-                          onChange={(e) =>
-                            setSelectedModel(
-                              e.target.value as typeof selectedModel,
-                            )
-                          }
-                          disabled={pending}
-                          className="w-full appearance-none rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <option value="black-forest-labs/FLUX.1-kontext-dev">
-                            Flux Kontext Dev
-                          </option>
-                          <option
-                            value="black-forest-labs/FLUX.1-kontext-pro"
-                            disabled={!hasApiKey}
-                          >
-                            Flux Kontext Pro{" "}
-                            {!hasApiKey && "(Together API key required)"}
-                          </option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                      {!hasApiKey &&
-                        selectedModel ===
-                          "black-forest-labs/FLUX.1-kontext-pro" && (
-                          <p className="mt-1 text-xs text-amber-400">
-                            Pro model requires an API key. Please add your
-                            Together AI API key to use this model.
-                          </p>
-                        )}
-                    </div>
+
 
                     <Fieldset className="relative rounded-xl bg-gray-900">
                       <div className="pointer-events-none absolute inset-px rounded-xl ring ring-white/10" />

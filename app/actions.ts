@@ -3,45 +3,24 @@
 
 import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
 import { getTogether } from "@/lib/get-together";
-import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
 import { z } from "zod";
-
-const ratelimit = getRateLimiter();
 
 const schema = z.object({
   imageUrl: z.string(),
   prompt: z.string(),
   width: z.number(),
   height: z.number(),
-  userAPIKey: z.string().nullable(),
   model: z
-    .enum([
-      "black-forest-labs/FLUX.1-kontext-dev",
-      "black-forest-labs/FLUX.1-kontext-pro",
-    ])
+    .enum(["black-forest-labs/FLUX.1-kontext-dev"])
     .default("black-forest-labs/FLUX.1-kontext-dev"),
 });
 
 export async function generateImage(
   unsafeData: z.infer<typeof schema>,
 ): Promise<{ success: true; url: string } | { success: false; error: string }> {
-  const { imageUrl, prompt, width, height, userAPIKey, model } =
-    schema.parse(unsafeData);
+  const { imageUrl, prompt, width, height, model } = schema.parse(unsafeData);
 
-  if (ratelimit && !userAPIKey) {
-    const ipAddress = await getIPAddress();
-
-    const { success } = await ratelimit.limit(ipAddress);
-    if (!success) {
-      return {
-        success: false,
-        error:
-          "No requests left. Please add your own API key or try again in 24h.",
-      };
-    }
-  }
-
-  const together = getTogether(userAPIKey);
+  const together = getTogether();
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
   let url;
@@ -51,6 +30,7 @@ export async function generateImage(
       prompt,
       width: adjustedDimensions.width,
       height: adjustedDimensions.height,
+      steps: 28,
       image_url: imageUrl,
     });
 
@@ -62,7 +42,7 @@ export async function generateImage(
       return {
         success: false,
         error:
-          "You need a paid Together AI account to use the Pro model. Please upgrade by purchasing credits here: https://api.together.xyz/settings/billing.",
+          "You need a paid Together AI account to use this model. Please upgrade by purchasing credits here: https://api.together.xyz/settings/billing.",
       };
     }
   }
