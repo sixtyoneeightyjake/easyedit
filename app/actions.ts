@@ -44,14 +44,29 @@ export async function generateImage(
   const together = getTogether(userAPIKey);
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
+  // Convert local URLs to full URLs for Together AI to access
+  let fullImageUrl = imageUrl;
+  if (imageUrl.startsWith('/')) {
+    // Get the base URL from the request headers or environment
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000'
+        : 'https://easyedit.io'; // fallback to production domain
+    fullImageUrl = `${baseUrl}${imageUrl}`;
+  }
+
   let url;
   try {
+    console.log('Making API call to Together AI with model:', model);
+    console.log('Image URL:', fullImageUrl);
+    
     const json = await together.images.create({
       model,
       prompt,
       width: adjustedDimensions.width,
       height: adjustedDimensions.height,
-      image_url: imageUrl,
+      image_url: fullImageUrl,
     });
 
     url = json.data[0].url;
